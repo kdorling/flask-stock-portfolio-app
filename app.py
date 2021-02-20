@@ -14,7 +14,7 @@ app.secret_key = b'\xa9?\x02\xdd\xcd\x831Z\xa4\xafw\x9cX*\xd4\x8a' \
 # Logging Configuration
 
 # Remove the default logger configured by Flask
-app.logger.removeHandler(default_handler)  
+app.logger.removeHandler(default_handler)
 file_handler = RotatingFileHandler('flask-stock-portfolio.log',
                                    maxBytes=16384,
                                    backupCount=20)
@@ -26,6 +26,7 @@ app.logger.addHandler(file_handler)
 
 # Log that the Flask application is starting
 app.logger.info('Starting the Flask Stock Portfolio App...')
+
 
 @app.route('/')
 def index():

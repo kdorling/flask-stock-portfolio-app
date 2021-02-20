@@ -13,3 +13,6 @@ Calling the index() function.
 2021-02-20 12:00:36,313 INFO: Starting the Flask Stock Portfolio App... [in app.py:28]
 2021-02-20 12:01:18,072 INFO: Starting the Flask Stock Portfolio App... [in app.py:28]
 2021-02-20 12:01:52,839 INFO: Added new stock (SBUX)! [in app.py:69]
+2021-02-20 12:10:28,153 INFO: Starting the Flask Stock Portfolio App... [in app.py:28]
+2021-02-20 12:10:43,619 INFO: Starting the Flask Stock Portfolio App... [in app.py:28]
+2021-02-20 12:10:54,822 INFO: Starting the Flask Stock Portfolio App... [in app.py:28]
