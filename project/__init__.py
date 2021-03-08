@@ -3,6 +3,20 @@ from logging.handlers import RotatingFileHandler
 import logging
 from flask.logging import default_handler
 import os
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+
+#####################
+#  Configuration    #
+#####################
+
+# Create the instances of the Flask extensions in the global scope,
+# but without any arguments passed in. These instances are not
+# attached to the Flask application at this point.
+
+database = SQLAlchemy()
+db_migration = Migrate()
 
 
 ######################################
@@ -17,12 +31,24 @@ def create_app():
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(config_type)
 
+    initialize_extensions(app)
     register_blueprints(app)
     configure_logging(app)
     register_app_callbacks(app)
     register_error_pages(app)
 
     return app
+
+
+########################
+#   Helper Functions   #
+########################
+
+def initialize_extensions(app):
+    # Since the application instance is now created, pass it to each Flask
+    # extension instance to bind it to the Flask application instance (app).
+    database.init_app(app)
+    db_migration.init_app(app, database)
 
 
 def register_blueprints(app):
