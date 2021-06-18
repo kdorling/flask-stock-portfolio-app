@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 
 # Determines the folder of the top-level directory of this project
@@ -20,6 +21,21 @@ class Config(object):
                                         default=default_database_uri)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    BCRYPT_LOG_ROUNDS = 15
+
+    WTF_CSRF_ENABLED = True
+
+    REMEMBER_COOKIE_DURATION = timedelta(days=14)
+
+    # Flask-Mail Configuration
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME', default='')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', default='')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_USERNAME', default='')
+
 
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
@@ -36,3 +52,7 @@ class TestingConfig(Config):
     default_test_database_uri = f'sqlite:///{default_test_database_path}'
     SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
                                         default=default_test_database_uri)
+
+    BCRYPT_LOG_ROUNDS = 4
+
+    WTF_CSRF_ENABLED = False

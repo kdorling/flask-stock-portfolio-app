@@ -5,6 +5,10 @@ from flask.logging import default_handler
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+from flask_wtf import CSRFProtect, csrf
+from flask_login import LoginManager
+from flask_mail import Mail
 
 
 #####################
@@ -17,27 +21,11 @@ from flask_migrate import Migrate
 
 database = SQLAlchemy()
 db_migration = Migrate()
-
-
-######################################
-#    Application Factory Function    #
-######################################
-
-def create_app():
-    # Create the Flask application
-    app = Flask(__name__)
-
-    # Configure the Flask application
-    config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
-    app.config.from_object(config_type)
-
-    initialize_extensions(app)
-    register_blueprints(app)
-    configure_logging(app)
-    register_app_callbacks(app)
-    register_error_pages(app)
-
-    return app
+bcrypt = Bcrypt()
+csrf_protection = CSRFProtect()
+login = LoginManager()
+login.login_view = 'users.login'
+mail = Mail()
 
 
 ########################
@@ -49,6 +37,19 @@ def initialize_extensions(app):
     # extension instance to bind it to the Flask application instance (app).
     database.init_app(app)
     db_migration.init_app(app, database)
+    bcrypt.init_app(app)
+    csrf_protection.init_app(app)
+
+    login.init_app(app)
+
+    # Flask-Login configuration
+    from project.models import User
+
+    @login.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+    mail.init_app(app)
 
 
 def register_blueprints(app):
@@ -110,3 +111,24 @@ def register_error_pages(app):
     @app.errorhandler(405)
     def method_not_allowed(e):
         return render_template('405.html'), 405
+
+
+######################################
+#    Application Factory Function    #
+######################################
+
+def create_app():
+    # Create the Flask application
+    app = Flask(__name__)
+
+    # Configure the Flask application
+    config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
+    app.config.from_object(config_type)
+
+    initialize_extensions(app)
+    register_blueprints(app)
+    configure_logging(app)
+    register_app_callbacks(app)
+    register_error_pages(app)
+
+    return app
